@@ -38,7 +38,7 @@ with triage_tab:
         col1, col2, col3 = st.columns(3)
         col1.metric("Category", analysis.category)
         col2.metric("Priority", analysis.priority)
-        col3.metric("Confidence", f"{analysis.confidence:.0%}")
+        col3.metric("Model probability", f"{analysis.confidence:.0%}")
 
         if analysis.security_flag:
             st.error("Potential security incident: stop interaction and escalate through the approved incident process.")
@@ -60,7 +60,10 @@ with triage_tab:
                 {"category": list(analysis.probabilities), "probability": list(analysis.probabilities.values())}
             ).set_index("category")
             st.bar_chart(chart_data)
-            st.caption("The classifier uses word and two-word TF-IDF features with logistic regression.")
+            st.caption(
+                "These are model probabilities, not guarantees. The classifier uses word and "
+                "two-word TF-IDF features with logistic regression."
+            )
 
         technician_notes = st.text_area("Technician notes", placeholder="Record validation, changes, and outcome.")
         status = st.selectbox("Review decision", ["Reviewed - pending work", "Resolved", "Escalated", "Prediction corrected"])

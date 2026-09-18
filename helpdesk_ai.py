@@ -17,7 +17,8 @@ from sklearn.pipeline import Pipeline
 ROOT = Path(__file__).parent
 SECURITY_TERMS = {
     "phishing", "malware", "ransomware", "stolen", "unknown login",
-    "entered my password", "suspicious attachment", "encrypted files",
+    "entered my password", "entered my microsoft password", "suspicious email",
+    "suspicious attachment", "encrypted files",
     "data breach", "compromised",
 }
 OUTAGE_TERMS = {"everyone", "entire office", "all users", "company-wide", "outage"}
@@ -53,8 +54,12 @@ class HelpDeskEngine:
         kb_path = kb_path or ROOT / "data" / "knowledge_base.json"
         training = pd.read_csv(training_path)
         self.model = Pipeline([
-            ("tfidf", TfidfVectorizer(ngram_range=(1, 2), stop_words="english")),
-            ("classifier", LogisticRegression(max_iter=1000, random_state=42)),
+            ("tfidf", TfidfVectorizer(
+                ngram_range=(1, 2), stop_words="english", sublinear_tf=True
+            )),
+            # Mildly reduced regularization helps this deliberately small starter
+            # dataset learn its category vocabulary without hiding uncertainty.
+            ("classifier", LogisticRegression(max_iter=1000, C=3.0, random_state=42)),
         ])
         self.model.fit(training["text"], training["category"])
 

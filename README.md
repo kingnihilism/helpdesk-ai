@@ -25,6 +25,11 @@ streamlit run app.py
 
 The first run creates `helpdesk.db` locally. No ticket data leaves the computer.
 
+### Updating an earlier copy
+
+Stop Streamlit with `Ctrl+C`, replace the project files, and launch it again. Streamlit
+caches the trained model while running, so a restart is required after model changes.
+
 ## Test it
 
 ```bash
@@ -49,6 +54,7 @@ Try these example tickets:
 ## Responsible-AI controls
 
 - Low-confidence predictions are clearly marked for manual review.
+- Displayed percentages are model probabilities, not guarantees of correctness.
 - Security indicators override ordinary ticket routing.
 - Common secrets and sensitive values are redacted before storage.
 - Recommendations cite their source articles.
